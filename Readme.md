@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Arthur236/e-commerce-drf.svg?branch=master)](https://travis-ci.org/Arthur236/e-commerce-drf)   [![Coverage Status](https://coveralls.io/repos/github/Arthur236/e-commerce-drf/badge.svg?branch=master)](https://coveralls.io/github/Arthur236/e-commerce-drf?branch=master)
+[![Build Status](https://travis-ci.org/Arthur236/e-commerce-drf.svg?branch=master)](https://travis-ci.org/Arthur236/e-commerce-drf)   [![Coverage Status](https://coveralls.io/repos/github/Arthur236/e-commerce-drf/badge.svg?branch=master)](https://coveralls.io/github/Arthur236/e-commerce-drf?branch=master)   [![Codacy Badge](https://api.codacy.com/project/badge/Grade/2d91e483de904d7e824ea7dd19bfc4f7)](https://www.codacy.com/app/Arthur236/e-commerce-drf?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Arthur236/e-commerce-drf&amp;utm_campaign=Badge_Grade)
 
 # eCommerce
 

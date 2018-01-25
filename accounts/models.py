@@ -53,7 +53,6 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    # Add your specific fields
     email = models.EmailField(max_length=255, unique=True)
     first_name = models.CharField(max_length=120)
     last_name = models.CharField(max_length=120)
@@ -61,7 +60,6 @@ class User(AbstractBaseUser):
     merchant = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
-    # confirmed_date = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = 'email'
 
