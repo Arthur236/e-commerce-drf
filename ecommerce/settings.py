@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    # 'rest_framework.authtoken',
 
     'accounts',
 ]
@@ -45,6 +46,13 @@ INSTALLED_APPS = [
 # Change built-in user model to your custom one
 
 AUTH_USER_MODEL = 'accounts.User'
+
+# # REST Framework configs
+# REST_FRAMEWORK = {
+#   'DEFAULT_AUTHENTICATION_CLASSES': (
+#       'rest_framework.authentication.TokenAuthentication',
+#     )
+# }
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

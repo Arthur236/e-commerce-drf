@@ -1,6 +1,5 @@
-from django.urls import reverse
+from django.core.urlresolvers import reverse
 from rest_framework import status
-from rest_framework.reverse import reverse as api_reverse
 from rest_framework.test import APITestCase
 
 
@@ -18,123 +17,66 @@ class UserTestCase(APITestCase):
         Initialize test data
         """
         user = User.objects.create(
-            email='user1@gmail.com',
-            first_name='User',
-            last_name='1'
+            email='test@gmail.com',
+            first_name='Test',
+            last_name='User'
         )
         user.set_password("password")
         user.save()
 
-    def test_created_user(self):
-        """
-        Test that a user can be created successfully
-        """
-        qs = User.objects.filter(email='user1@gmail.com')
-        self.assertEqual(qs.count(), 1)
+        # Define our URLs
+        self.register_url = reverse('register')
 
-    def test_register_user_api_fail(self):
-        """
-        Test that registration fails with missing fields
-        """
-        url = api_reverse('api-auth:register')
-        data = {
-            'email': 'user1@gmail.com',
-            'first_name': 'User',
-            'last_name': '1',
-            'password': 'password',
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)  # 400
-        self.assertEqual(response.data['password2'][0], 'This field is required.')
-
-    def test_register_user_api(self):
+    def test_register_user(self):
         """
         Test that a user is created successfully
         """
-        url = api_reverse('api-auth:register')
         data = {
-            'email': 'user1@gmail.com',
-            'first_name': 'User',
-            'last_name': '1',
-            'password': 'password',
-            'password2': 'password'
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)  # 400
-        token_len = len(response.data.get("token", 0))
-        self.assertGreater(token_len, 0)
-
-    def test_login_user_api(self):
-        """
-        Test that a registered user can log in
-        """
-        url = api_reverse('api-auth:login')
-        data = {
-            'email': 'user1@gmail.com',
-            'password': 'password',
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)  # 400
-        token = response.data.get("token", 0)
-        token_len = 0
-        if token != 0:
-            token_len = len(token)
-        self.assertGreater(token_len, 0)
-
-    def test_login_user_api_fail(self):
-        """
-        Test that a non registered user cannot log in
-        """
-        url = api_reverse('api-auth:login')
-        data = {
-            'email': 'user456@gmail.com',  # does not exist
-            'password': 'password',
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)  # 400
-        token = response.data.get("token", 0)
-        token_len = 0
-        if token != 0:
-            token_len = len(token)
-        self.assertEqual(token_len, 0)
-
-    def test_token_login_api(self):
-        """
-        Test that a user cannot log in twice within the same session
-        """
-        url = api_reverse('api-auth:login')
-        data = {
-            'email': 'user1@gmail.com',
-            'password': 'password',
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)  # 400
-        token = response.data.get("token", None)
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
-        response2 = self.client.post(url, data, format='json')
-        self.assertEqual(response2.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_token_register_api(self):
-        """
-        Test that a user cannot register when they already have a token
-        """
-        url = api_reverse('api-auth:login')
-        data = {
-            'email': 'user1@gmail.com',
-            'password': 'password',
-        }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)  # 400
-        token = response.data.get("token", None)
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
-
-        url2 = api_reverse('api-auth:register')
-        data2 = {
             'email': 'user2@gmail.com',
             'first_name': 'User',
-            'last_name': '2',
+            'last_name': 'user',
             'password': 'password',
             'password2': 'password'
         }
-        response = self.client.post(url2, data2, format='json')
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)  # 403
+        response = self.client.post(self.register_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)  # 400
+
+    def test_create_user_with_short_password(self):
+        """
+        Test user is not created for password lengths less than 8.
+        """
+        data = {
+            'email': 'user3@example.com',
+            'password': 'pass',
+            'first_name': 'User',
+            'last_name': 'user',
+        }
+
+        response = self.client.post(self.register_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_user_with_no_password(self):
+        """
+        Test user is not created without a password
+        """
+        data = {
+            'email': 'user4@example.com',
+            'password': '',
+            'first_name': 'User',
+            'last_name': 'user',
+        }
+
+        response = self.client.post(self.register_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_user_with_no_names(self):
+        """
+        Test user is not created without a first and last name
+        """
+        data = {
+            'email': 'user5@example.com',
+            'password': 'password'
+        }
+
+        response = self.client.post(self.register_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

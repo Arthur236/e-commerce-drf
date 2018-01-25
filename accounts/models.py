@@ -13,8 +13,14 @@ class UserManager(BaseUserManager):
         if not password:
             raise ValueError("Users must have a password")
 
+        if len(password) < 8:
+            raise ValueError("Password must be at least 8 characters long")
+
         if not first_name and not last_name:
-            raise ValueError("Users must provide both names")
+            raise ValueError("You must provide both names")
+
+        if len(first_name) < 2 and len(last_name) < 2:
+            raise ValueError("Names must be at least 2 characters long")
 
         user_obj = self.model(
             email=self.normalize_email(email),
