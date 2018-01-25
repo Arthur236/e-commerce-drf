@@ -26,15 +26,16 @@ class UserTestCase(APITestCase):
 
         # Define our URLs
         self.register_url = reverse('register')
+        self.merchant_register_url = reverse('merchant-register')
 
     def test_register_user(self):
         """
         Test that a user is created successfully
         """
         data = {
-            'email': 'user2@gmail.com',
-            'first_name': 'User',
-            'last_name': 'user',
+            'email': 'user@gmail.com',
+            'first_name': 'Test',
+            'last_name': 'User',
             'password': 'password',
             'password2': 'password'
         }
@@ -46,10 +47,10 @@ class UserTestCase(APITestCase):
         Test user is not created for password lengths less than 8.
         """
         data = {
-            'email': 'user3@example.com',
-            'password': 'pass',
-            'first_name': 'User',
-            'last_name': 'user',
+            'email': 'user@example.com',
+            'first_name': 'Test',
+            'last_name': 'User',
+            'password': 'password'
         }
 
         response = self.client.post(self.register_url, data, format='json')
@@ -60,10 +61,10 @@ class UserTestCase(APITestCase):
         Test user is not created without a password
         """
         data = {
-            'email': 'user4@example.com',
-            'password': '',
-            'first_name': 'User',
-            'last_name': 'user',
+            'email': 'user@example.com',
+            'first_name': 'Test',
+            'last_name': 'User',
+            'password': ''
         }
 
         response = self.client.post(self.register_url, data, format='json')
@@ -74,9 +75,23 @@ class UserTestCase(APITestCase):
         Test user is not created without a first and last name
         """
         data = {
-            'email': 'user5@example.com',
+            'email': 'user@example.com',
             'password': 'password'
         }
 
         response = self.client.post(self.register_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_register_merchant(self):
+        """
+        Test that a merchant is created successfully
+        """
+        data = {
+            'email': 'merchant@gmail.com',
+            'first_name': 'Test',
+            'last_name': 'Merchant',
+            'password': 'password',
+            'password2': 'password'
+        }
+        response = self.client.post(self.merchant_register_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)  # 400

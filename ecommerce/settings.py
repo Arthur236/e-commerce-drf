@@ -82,6 +82,8 @@ TEMPLATES = [
     },
 ]
 
+TEMPLATES[0]['OPTIONS']['debug'] = True
+
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
 
