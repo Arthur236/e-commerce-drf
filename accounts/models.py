@@ -6,7 +6,11 @@ from django.contrib.auth.models import (
 
 class UserManager(BaseUserManager):
     def create_user(
-            self, email, first_name, last_name, password=None, is_active=True, is_merchant=False, is_admin=False):
+            self, username, email, password=None, is_active=True, is_merchant=False, is_admin=False):
+
+        if not username:
+            raise ValueError("Users must have a username")
+
         if not email:
             raise ValueError("Users must have an email address")
 
@@ -16,16 +20,9 @@ class UserManager(BaseUserManager):
         if len(password) < 8:
             raise ValueError("Password must be at least 8 characters long")
 
-        if not first_name and not last_name:
-            raise ValueError("You must provide both names")
-
-        if len(first_name) < 2 and len(last_name) < 2:
-            raise ValueError("Names must be at least 2 characters long")
-
         user_obj = self.model(
-            email=self.normalize_email(email),
-            first_name=first_name,
-            last_name=last_name
+            username=username,
+            email=self.normalize_email(email)
         )
         user_obj.set_password(password)
         user_obj.active = is_active
@@ -35,23 +32,21 @@ class UserManager(BaseUserManager):
 
         return user_obj
 
-    def create_merchant_user(self, email, first_name, last_name, password):
+    def create_merchant_user(self, username, email, password):
         user = self.create_user(
+            username,
             email,
             password=password,
-            first_name=first_name,
-            last_name=last_name,
             is_merchant=True
         )
 
         return user
 
-    def create_superuser(self, email, first_name, last_name, password):
+    def create_superuser(self, username, email, password):
         user = self.create_user(
+            username,
             email,
             password=password,
-            first_name=first_name,
-            last_name=last_name,
             is_admin=True
         )
 
@@ -59,31 +54,28 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
+    username = models.CharField(max_length=120, unique=True)
     email = models.EmailField(max_length=255, unique=True)
-    first_name = models.CharField(max_length=120)
-    last_name = models.CharField(max_length=120)
     active = models.BooleanField(default=True)
     merchant = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    date_created = models.DateTimeField(auto_now_add=True)
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'username'
 
     # USERNAME_FIELD and password are required by default
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['email']
 
     objects = UserManager()
 
     def __str__(self):
-        return self.email
+        return self.username
 
     def get_full_name(self):
-        if self.full_name:
-            return self.first_name + " " + self.last_name
         return self.email
 
     def get_short_name(self):
-        return self.first_name
+        return self.username
 
     def has_perm(self, perm, obj=None):
         return True

@@ -6,25 +6,25 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(
+        validators=[UniqueValidator(queryset=User.objects.all())]
+    )
     email = serializers.EmailField(
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
     password = serializers.CharField(min_length=8)
 
     def create(self, validated_data):
-        user = User.objects.create_user(validated_data['email'],
-                                        validated_data['first_name'],
-                                        validated_data['last_name'],
+        user = User.objects.create_user(validated_data['username'],
+                                        validated_data['email'],
                                         validated_data['password']
                                         )
         return user
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'last_name', 'password')
+        fields = ('id', 'username', 'email', 'password')
 
 
 class MerchantSerializer(serializers.ModelSerializer):
@@ -37,12 +37,11 @@ class MerchantSerializer(serializers.ModelSerializer):
     password = serializers.CharField(min_length=8, write_only=True)
 
     def create(self, validated_data):
-        user = User.objects.create_merchant_user(validated_data['email'],
-                                                 validated_data['first_name'],
-                                                 validated_data['last_name'],
-                                                 validated_data['password'])
+        user = User.objects.create_user(validated_data['username'],
+                                        validated_data['email'],
+                                        validated_data['password'])
         return user
 
     class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'last_name', 'password')
+        fields = ('id', 'username', 'email', 'password')

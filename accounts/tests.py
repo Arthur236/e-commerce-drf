@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from rest_framework.authtoken.models import Token
 
 
 from django.contrib.auth import get_user_model
@@ -17,9 +18,8 @@ class UserTestCase(APITestCase):
         Initialize test data
         """
         user = User.objects.create(
+            username='test',
             email='test@gmail.com',
-            first_name='Test',
-            last_name='User'
         )
         user.set_password("password")
         user.save()
@@ -30,26 +30,28 @@ class UserTestCase(APITestCase):
 
     def test_register_user(self):
         """
-        Test that a user is created successfully
+        Test that a user with a valid token is created successfully
         """
         data = {
+            'username': 'user',
             'email': 'user@gmail.com',
-            'first_name': 'Test',
-            'last_name': 'User',
             'password': 'password',
             'password2': 'password'
         }
         response = self.client.post(self.register_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)  # 400
 
+        user = User.objects.latest('id')
+        token = Token.objects.get(user=user)
+        self.assertEqual(response.data['token'], token.key)
+
     def test_create_user_with_short_password(self):
         """
         Test user is not created for password lengths less than 8.
         """
         data = {
+            'username': 'user',
             'email': 'user@example.com',
-            'first_name': 'Test',
-            'last_name': 'User',
             'password': 'pass'
         }
 
@@ -61,18 +63,17 @@ class UserTestCase(APITestCase):
         Test user is not created without a password
         """
         data = {
+            'username': 'user',
             'email': 'user@example.com',
-            'first_name': 'Test',
-            'last_name': 'User',
             'password': ''
         }
 
         response = self.client.post(self.register_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_user_with_no_names(self):
+    def test_create_user_with_no_username(self):
         """
-        Test user is not created without a first and last name
+        Test user is not created without a username
         """
         data = {
             'email': 'user@example.com',
@@ -87,6 +88,7 @@ class UserTestCase(APITestCase):
         Test whether a user can be registered without an email
         """
         data = {
+            'username': 'user',
             'email': '',
             'password': 'password'
         }
@@ -99,9 +101,8 @@ class UserTestCase(APITestCase):
         Test whether emails are unique
         """
         data = {
-            'email': 'test@gmail.com',
-            'first_name': 'Test',
-            'last_name': 'User',
+            'username': 'test',
+            'email': 'test@example.com',
             'password': 'password'
         }
 
@@ -113,11 +114,13 @@ class UserTestCase(APITestCase):
         Test that a merchant is created successfully
         """
         data = {
-            'email': 'merchant@gmail.com',
-            'first_name': 'Test',
-            'last_name': 'Merchant',
-            'password': 'password',
-            'password2': 'password'
+            'username': 'user',
+            'email': 'user@gmail.com',
+            'password': 'password'
         }
         response = self.client.post(self.merchant_register_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)  # 400
+
+        user = User.objects.latest('id')
+        token = Token.objects.get(user=user)
+        self.assertEqual(response.data['token'], token.key)
