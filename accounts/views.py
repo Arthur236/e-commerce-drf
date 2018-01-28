@@ -73,7 +73,6 @@ class LoginView(APIView):
         email = request.data.get('email', '')
         password = request.data.get('password', '')
         user = authenticate(request, username=email, password=password)
-        print(user)
 
         if user is not None:
             login(request, user)  # saves the user’s ID in the session, using Django’s session framework.

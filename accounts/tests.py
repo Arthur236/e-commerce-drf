@@ -1,35 +1,17 @@
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase
 from rest_framework.authtoken.models import Token
 
-
-from django.contrib.auth import get_user_model
+from ecommerce.base_test import BaseTest
 
 User = get_user_model()
 
 
-class UserTestCase(APITestCase):
+class UserTestCase(BaseTest):
     """
     Test cases for user registration
     """
-    def setUp(self):
-        """
-        Initialize test data
-        """
-        user = User.objects.create(
-            username='test',
-            email='test@gmail.com',
-        )
-        user.set_password("password")
-        user.save()
-
-        # Define our URLs
-        self.register_url = reverse('register')
-        self.merchant_register_url = reverse('merchant-register')
-        self.login_url = reverse('login')
-        self.logout_url = reverse('logout')
-
     def test_register_user(self):
         """
         Test that a user with a valid token is created successfully
@@ -152,5 +134,22 @@ class UserTestCase(APITestCase):
         }
 
         response = self.client.post(self.login_url, data, format('json'))
+        # Assert status code is 401 UNAUTHORIZED
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_logout_user(self):
+        """
+        Test that a logged in user can logout
+        """
+        self.login_user("test@gmail.com", "password")
+        response = self.client.get(self.logout_url)
+        # Assert status code is 200 OK
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_logout_user_without_login(self):
+        """
+        Test that a non logged in user cannot log out
+        """
+        response = self.client.get(self.logout_url)
         # Assert status code is 401 UNAUTHORIZED
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
