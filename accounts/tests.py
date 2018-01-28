@@ -27,6 +27,8 @@ class UserTestCase(APITestCase):
         # Define our URLs
         self.register_url = reverse('register')
         self.merchant_register_url = reverse('merchant-register')
+        self.login_url = reverse('login')
+        self.logout_url = reverse('logout')
 
     def test_register_user(self):
         """
@@ -124,3 +126,31 @@ class UserTestCase(APITestCase):
         user = User.objects.latest('id')
         token = Token.objects.get(user=user)
         self.assertEqual(response.data['token'], token.key)
+
+    def test_login_with_valid_credentials(self):
+        """
+        Test a user can log in with valid credentials
+        """
+        data = {
+            'email': 'test@gmail.com',
+            'password': 'password'
+        }
+
+        response = self.client.post(self.login_url, data, format('json'))
+        # Assert token key exists
+        self.assertIn('token', response.data)
+        # Assert status code is 200 OK
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_login_with_invalid_credentials(self):
+        """
+        Test a user cannot log in with invalid credentials
+        """
+        data = {
+            'email': 'test@gmail.com',
+            'password': 'pass'
+        }
+
+        response = self.client.post(self.login_url, data, format('json'))
+        # Assert status code is 401 UNAUTHORIZED
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
