@@ -61,10 +61,10 @@ class User(AbstractBaseUser):
     admin = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
 
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = 'email'
 
     # USERNAME_FIELD and password are required by default
-    REQUIRED_FIELDS = ['email']
+    REQUIRED_FIELDS = ['username']
 
     objects = UserManager()
 
