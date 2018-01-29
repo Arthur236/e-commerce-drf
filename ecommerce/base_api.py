@@ -11,6 +11,8 @@ class BaseTest(APITestCase):
     """
     Base test cases
     """
+    client = APIClient()
+
     def setUp(self):
         self.register_url = reverse('register')
         self.merchant_register_url = reverse('merchant-register')
@@ -32,11 +34,10 @@ class BaseTest(APITestCase):
         self.user.set_password("password")
         self.user.save()
 
-
     def login_user(self, email, password):
         data = {
             'email': email,
-            'password': password,
+            'password': password
         }
         response = self.client.post(self.login_url, data, format='json')
 
@@ -44,3 +45,5 @@ class BaseTest(APITestCase):
         self.client.credentials(
             HTTP_AUTHORIZATION='Bearer ' + self.token
         )
+
+        self.client.login(username=email, password=password)
