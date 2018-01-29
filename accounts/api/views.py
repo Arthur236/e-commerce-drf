@@ -6,9 +6,7 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import (
-    IsAuthenticated,
-    IsAdminUser,
-    AllowAny
+    IsAuthenticated
 )
 
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
@@ -17,8 +15,7 @@ from rest_framework_jwt.settings import api_settings
 from .serializers import (
     MerchantSerializer,
     TokenSerializer,
-    UserSerializer,
-    UserProfileSerializer
+    UserSerializer
 )
 
 User = get_user_model()
@@ -85,14 +82,6 @@ class LoginView(APIView):
             serializer.is_valid()
             return Response(serializer.data)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
-
-
-class UserDetail(RetrieveAPIView):
-    """
-    Returns details of a single user
-    """
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
 
 
 class LogoutView(APIView):
