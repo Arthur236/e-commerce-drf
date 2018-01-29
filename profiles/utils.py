@@ -9,7 +9,7 @@ def user_is_allowed(request, username):
     """
     Checks if the user has permission to access a resource
     """
-    return request.user.username == username or request.user.is_superuser
+    return request.user.username == username or request.user.is_admin
 
 
 def get_profile(username):
