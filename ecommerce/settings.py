@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     'accounts',
     'profiles',
+    'stores',
 ]
 
 # Change built-in user model to your custom one
