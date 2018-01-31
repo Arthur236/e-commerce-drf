@@ -5,6 +5,6 @@ from .views import (
 )
 
 urlpatterns = [
-    url(r'$', StoreAPIView.as_view(), name='store-create'),
     url(r'(?P<slug>[\w-]+)/$', StoreRUDView.as_view(), name='store-rud'),
+    url(r'$', StoreAPIView.as_view(), name='store-create'),
 ]

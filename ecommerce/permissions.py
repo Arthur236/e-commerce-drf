@@ -16,7 +16,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
             return True
 
         # Compare instance to the user in request
-        return obj == request.user
+        return obj.user == request.user
 
 
 class IsMerchant(permissions.BasePermission):
