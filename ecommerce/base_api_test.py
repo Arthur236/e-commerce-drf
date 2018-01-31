@@ -3,6 +3,8 @@ from django.core.urlresolvers import reverse
 
 from rest_framework.test import APITestCase, APIClient
 
+from stores.models import Store
+
 User = get_user_model()
 
 
@@ -25,6 +27,15 @@ class BaseTest(APITestCase):
             password='pass1234'
         )
 
+        # Create a merchant user
+        self.merchant = User.objects.create(
+            username='merchant',
+            email='merchant@gmail.com',
+        )
+        self.merchant.set_password("password")
+        self.merchant.merchant = True
+        self.merchant.save()
+
         # Create a normal user
         self.user = User.objects.create(
             username='test',
@@ -32,6 +43,13 @@ class BaseTest(APITestCase):
         )
         self.user.set_password("password")
         self.user.save()
+
+        # Create a store
+        self.store = Store.objects.create(
+            user=self.merchant,
+            name="Test Store",
+            location="Some Location"
+        )
 
     def login_user(self, email, password):
         data = {
