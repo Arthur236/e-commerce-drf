@@ -18,7 +18,6 @@ class ProfileTestCase(BaseTest):
         self.login_user('test@gmail.com', 'password')
 
         response = self.client.get(self.profile_url, format='json')
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_superuser_get_profile(self):

@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from rest_framework import status
-from rest_framework.authtoken.models import Token
 
 from ecommerce.base_api_test import BaseTest
 
@@ -17,7 +16,7 @@ class StoreTestCase(BaseTest):
 
     def test_create_store(self):
         """
-        Test if a logged in user can create a store
+        Test if a logged in merchant can create a store
         """
         data = {
             'name': 'Another Store',
@@ -29,7 +28,44 @@ class StoreTestCase(BaseTest):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_get_store_list(self):
+        """
+        Test that a merchant can get a list of their stores
+        """
         data = {}
+        self.login_user("merchant@gmail.com", "password")
+        response = self.client.get(self.create_url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_single_store(self):
+        """
+        Test that a merchant can get a single store
+        """
+        data = {}
+        self.login_user("merchant@gmail.com", "password")
         response = self.client.get(self.rud_url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_store(self):
+        """
+        Test if a logged in merchant can create a store
+        """
+        data = {
+            'name': 'Store Update',
+            'location': 'Some Location'
+        }
+        self.login_user("merchant@gmail.com", "password")
+        response = self.client.put(self.rud_url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_delete_store(self):
+        """
+        Test if a logged in merchant can delete a store
+        """
+        data = {}
+        self.login_user("merchant@gmail.com", "password")
+        response = self.client.delete(self.rud_url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

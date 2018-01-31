@@ -16,18 +16,9 @@ class UserProfileRUpView(generics.RetrieveUpdateAPIView):
     """
     Retrieve or update a user's profile.
     """
+    lookup_field = 'username'
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
     def get_queryset(self):
-        return Profile.objects.all()
-
-    def get_object(self):
-        queryset = User.objects.all()
-        username = self.kwargs.get('username')
-
-        user = get_object_or_404(queryset, username=username)
-
-        profile = Profile.objects.get(user=user)
-
-        return profile
+        return User.objects.all()
