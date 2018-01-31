@@ -6,7 +6,7 @@ User = settings.AUTH_USER_MODEL
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, related_name='user', on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name='user_profile', on_delete=models.CASCADE)
     first_name = models.CharField(max_length=120, blank=True, null=True)
     last_name = models.CharField(max_length=120, blank=True, null=True)
     timestamp = models.DateTimeField(auto_now_add=True)

@@ -1,17 +1,23 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from profiles.models import Profile
+User = get_user_model()
 
 
-class ProfileSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.HyperlinkedModelSerializer):
+    first_name = serializers.CharField(source='user_profile.first_name', allow_blank=True, allow_null=True)
+    last_name = serializers.CharField(source='user_profile.last_name', allow_blank=True, allow_null=True)
+
     class Meta:
-        model = Profile
+        model = User
         fields = (
-            'user',
+            'username',
+            'email',
+            'last_login',
             'first_name',
             'last_name',
-            'timestamp',
+            'date_created',
             'updated'
         )
 
-        read_only_fields = ['user']
+        read_only_fields = ['last_login', 'date_created']

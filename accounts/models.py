@@ -60,6 +60,7 @@ class User(AbstractBaseUser):
     merchant = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
     date_created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = 'email'
 

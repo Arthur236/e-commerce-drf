@@ -1,4 +1,7 @@
+from django.contrib.auth import get_user_model
 from rest_framework import permissions
+
+User = get_user_model()
 
 
 class IsOwnerOrReadOnly(permissions.BasePermission):
@@ -12,5 +15,5 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS or request.user.is_admin:
             return True
 
-        # Compare instance attribute to the user in request
-        return obj.user == request.user
+        # Compare instance to the user in request
+        return obj == request.user
