@@ -1,6 +1,7 @@
 from django.db.models import Q
 from rest_framework import generics, mixins
 
+from ecommerce.permissions import IsOwnerOrReadOnly
 from stores.models import Store
 from .serializers import StoreSerializer
 
@@ -34,6 +35,7 @@ class StoreAPIView(mixins.CreateModelMixin, generics.ListAPIView):
 class StoreRUDView(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'slug'
     serializer_class = StoreSerializer
+    permission_classes = [IsOwnerOrReadOnly]
 
     def get_queryset(self):
         return Store.objects.all()
