@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model, authenticate, login, logout
+from django.utils.decorators import method_decorator
 
 from rest_framework import status
 from rest_framework.views import APIView
