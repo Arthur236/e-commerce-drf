@@ -17,3 +17,14 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
         # Compare instance to the user in request
         return obj == request.user
+
+
+class IsMerchant(permissions.BasePermission):
+    """
+    Check whether the user is a merchant
+    """
+    def has_permission(self, request, view):
+        if request.user.is_merchant:
+            return True
+
+        return False

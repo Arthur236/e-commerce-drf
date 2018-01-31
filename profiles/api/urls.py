@@ -1,8 +1,8 @@
 from django.conf.urls import url
 from .views import (
-    UserProfileRUDView
+    UserProfileRUpView
 )
 
 urlpatterns = [
-    url(r'(?P<username>[\w-]+)/$', UserProfileRUDView.as_view(), name='profile'),
+    url(r'(?P<username>[\w-]+)/$', UserProfileRUpView.as_view(), name='profile'),
 ]

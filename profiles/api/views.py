@@ -12,7 +12,7 @@ from .serializers import ProfileSerializer
 User = get_user_model()
 
 
-class UserProfileRUDView(generics.RetrieveUpdateAPIView):
+class UserProfileRUpView(generics.RetrieveUpdateAPIView):
     """
     Retrieve or update a user's profile.
     """

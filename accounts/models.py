@@ -5,8 +5,7 @@ from django.contrib.auth.models import (
 
 
 class UserManager(BaseUserManager):
-    def create_user(
-            self, username, email, password=None, is_active=True, is_merchant=False, is_admin=False):
+    def create_user(self, username, email, password=None, is_active=True):
 
         if not username:
             raise ValueError("Users must have a username")
@@ -26,8 +25,8 @@ class UserManager(BaseUserManager):
         )
         user_obj.set_password(password)
         user_obj.active = is_active
-        user_obj.merchant = is_merchant
-        user_obj.admin = is_admin
+        user_obj.merchant = False
+        user_obj.admin = False
         user_obj.save(using=self._db)
 
         return user_obj
@@ -36,9 +35,10 @@ class UserManager(BaseUserManager):
         user = self.create_user(
             username,
             email,
-            password=password,
-            is_merchant=True
+            password=password
         )
+        user.merchant = True
+        user.save(using=self._db)
 
         return user
 
@@ -46,9 +46,11 @@ class UserManager(BaseUserManager):
         user = self.create_user(
             username,
             email,
-            password=password,
-            is_admin=True
+            password=password
         )
+
+        user.admin = True
+        user.save(using=self._db)
 
         return user
 

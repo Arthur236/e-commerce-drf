@@ -1,7 +1,7 @@
 from django.db.models import Q
 from rest_framework import generics, mixins
 
-from ecommerce.permissions import IsOwnerOrReadOnly
+from ecommerce.permissions import IsOwnerOrReadOnly, IsMerchant
 from stores.models import Store
 from .serializers import StoreSerializer
 
@@ -12,9 +12,10 @@ class StoreAPIView(mixins.CreateModelMixin, generics.ListAPIView):
     """
     lookup_field = 'slug'
     serializer_class = StoreSerializer
+    permission_classes = (IsMerchant,)
 
     def get_queryset(self):
-        qs = Store.objects.all()
+        qs = Store.objects.filter(user=self.request.user)
         query = self.request.GET.get('q')
 
         if query is not None:
@@ -35,7 +36,7 @@ class StoreAPIView(mixins.CreateModelMixin, generics.ListAPIView):
 class StoreRUDView(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'slug'
     serializer_class = StoreSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = (IsOwnerOrReadOnly, IsMerchant,)
 
     def get_queryset(self):
         return Store.objects.all()

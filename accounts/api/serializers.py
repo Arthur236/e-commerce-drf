@@ -6,53 +6,9 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(
-        validators=[UniqueValidator(queryset=User.objects.all())]
-    )
-    email = serializers.EmailField(
-        required=True,
-        validators=[UniqueValidator(queryset=User.objects.all())]
-    )
-    password = serializers.CharField(min_length=8)
-
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'email', 'password')
-
-    def create(self, validated_data):
-        user = User.objects.create_user(validated_data['username'],
-                                        validated_data['email'],
-                                        validated_data['password']
-                                        )
-        return user
-
-    def validate_username(self, value):
-        qs = User.objects.filter(username__iexact=value)
-
-        if self.instance:
-            qs = qs.exclude(pk=self.instance.pk)
-        if qs.exists():
-            raise serializers.ValidationError("That username is already taken")
-        return value
-
-    def validate_email(self, value):
-        qs = User.objects.filter(email__iexact=value)
-
-        if self.instance:
-            qs = qs.exclude(pk=self.instance.pk)
-        if qs.exists():
-            raise serializers.ValidationError("That email must be unique")
-        return value
-
-
-class MerchantSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(
-        required=True,
-        validators=[UniqueValidator(queryset=User.objects.all())]
-    )
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
-    password = serializers.CharField(min_length=8, write_only=True)
+    username = serializers.CharField(required=True)
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True, min_length=8)
 
     class Meta:
         model = User
@@ -63,6 +19,58 @@ class MerchantSerializer(serializers.ModelSerializer):
                                         validated_data['email'],
                                         validated_data['password'])
         return user
+
+    def validate_username(self, value):
+        qs = User.objects.filter(username__iexact=value)
+
+        if self.instance:
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise serializers.ValidationError("That username is already taken.")
+        return value
+
+    def validate_email(self, value):
+        qs = User.objects.filter(email__iexact=value)
+
+        if self.instance:
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise serializers.ValidationError("That email is already taken.")
+        return value
+
+
+class MerchantSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(required=True)
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True, min_length=8)
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email', 'password')
+
+    def create(self, validated_data):
+        user = User.objects.create_merchant_user(validated_data['username'],
+                                                 validated_data['email'],
+                                                 validated_data['password'])
+        return user
+
+    def validate_username(self, value):
+        qs = User.objects.filter(username__iexact=value)
+
+        if self.instance:
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise serializers.ValidationError("That username is already taken.")
+        return value
+
+    def validate_email(self, value):
+        qs = User.objects.filter(email__iexact=value)
+
+        if self.instance:
+            qs = qs.exclude(pk=self.instance.pk)
+        if qs.exists():
+            raise serializers.ValidationError("That email is already taken.")
+        return value
 
 
 class TokenSerializer(serializers.Serializer):
