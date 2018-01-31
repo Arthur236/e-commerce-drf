@@ -1,62 +1,33 @@
-from rest_framework import status
-from rest_framework.generics import RetrieveUpdateAPIView
+from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
+from rest_framework import generics
 from rest_framework.permissions import (
     IsAuthenticated
 )
-from rest_framework.response import Response
 
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-from rest_framework_jwt.settings import api_settings
+from ecommerce.permissions import IsOwnerOrReadOnly
+from profiles.models import Profile
+from .serializers import ProfileSerializer
 
-from profiles.utils import (
-    get_profile,
-    user_is_allowed
-)
-from.serializers import UserProfileSerializer
+User = get_user_model()
 
 
-class UserProfileDetails(RetrieveUpdateAPIView):
+class UserProfileRUDView(generics.RetrieveUpdateAPIView):
     """
-    Retrieve, update or delete a user's profile.
+    Retrieve or update a user's profile.
     """
-    authentication_classes = (JSONWebTokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
-    def get(self, request, format=None, **kwargs):
-        """
-        Retrieve user profile of the user in the request object
-        """
-        username = kwargs['username']
+    def get_queryset(self):
+        return Profile.objects.all()
 
-        if user_is_allowed(request, username):
-            data = get_profile(username=username)
-            if data is not None:
-                serializer = UserProfileSerializer(data=data)
-                serializer.is_valid()
-                return Response(data=serializer.data)
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+    def get_object(self):
+        queryset = User.objects.all()
+        username = self.kwargs.get('username')
 
-    # def put(self, request, format=None, **kwargs):
-    #     """
-    #     Update user profile
-    #     """
-    #     username = kwargs['username']
-    #     if user_is_allowed(request, username):
-    #         data = {
-    #             'username': username,
-    #             'email': request.data.get('email', ''),
-    #             'first_name': request.data.get('first_name', ''),
-    #             'last_name': request.data.get('last_name', ''),
-    #             'description': request.data.get('description', '')
-    #         }
-    #         if update_user_profile(data=data):
-    #             serializer = UserProfileSerializer(
-    #                 data=get_profile(
-    #                     username=request.user.username
-    #                 )
-    #             )
-    #             serializer.is_valid()
-    #             return Response(data=serializer.data)
-    #         return Response(status=status.HTTP_400_BAD_REQUEST)
-    #     return Response(status=status.HTTP_401_UNAUTHORIZED)
+        user = get_object_or_404(queryset, username=username)
+
+        profile = Profile.objects.get(user=user)
+
+        return profile
