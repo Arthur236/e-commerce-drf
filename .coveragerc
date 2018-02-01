@@ -1,0 +1,4 @@
+[run]
+# The 'timid' line might be unnecessary
+# timid = True
+plugins = django_coverage_plugin
