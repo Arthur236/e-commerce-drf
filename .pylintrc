@@ -10,13 +10,12 @@ extension-pkg-whitelist=
 ignore=CVS,
        migrations,
        south_migrations,
-       admin.py,
-       apps.py,
-       manage.py
 
 # Add files or directories matching the regex patterns to the blacklist. The
 # regex matches against base names, not paths.
-ignore-patterns=
+ignore-patterns=admin.py,
+                apps.py,
+                manage.py
 
 # Python code to execute, usually for sys.path manipulation such as
 # pygtk.require().

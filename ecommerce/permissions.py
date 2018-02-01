@@ -27,6 +27,9 @@ class IsMerchant(permissions.BasePermission):
     Check whether the user is a merchant
     """
     def has_permission(self, request, view):
+        """
+        Read permissions are allowed to any request
+        """
         if request.user.merchant:
             return True
 

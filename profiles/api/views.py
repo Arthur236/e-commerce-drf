@@ -22,4 +22,7 @@ class UserProfileRUpView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
     def get_queryset(self):
+        """
+        Get queryset
+        """
         return User.objects.all()
