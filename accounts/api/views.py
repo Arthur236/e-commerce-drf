@@ -27,7 +27,6 @@ class RegisterAPIView(APIView):
     """
     Registers a new user
     """
-
     def post(self, request, format='json'):
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
@@ -45,7 +44,6 @@ class MerchantRegisterAPIView(APIView):
     """
     Registers a new merchant
     """
-
     def post(self, request, format='json'):
         serializer = MerchantSerializer(data=request.data)
         if serializer.is_valid():

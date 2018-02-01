@@ -15,9 +15,11 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'password')
 
     def create(self, validated_data):
-        user = User.objects.create_user(validated_data['username'],
-                                        validated_data['email'],
-                                        validated_data['password'])
+        user = User.objects.create_user(
+            validated_data['username'],
+            validated_data['email'],
+            validated_data['password']
+        )
         return user
 
     def validate_username(self, value):
@@ -49,9 +51,12 @@ class MerchantSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'password')
 
     def create(self, validated_data):
-        user = User.objects.create_merchant_user(validated_data['username'],
-                                                 validated_data['email'],
-                                                 validated_data['password'])
+        user = User.objects.create_merchant(
+            validated_data['username'],
+            validated_data['email'],
+            validated_data['password']
+        )
+
         return user
 
     def validate_username(self, value):

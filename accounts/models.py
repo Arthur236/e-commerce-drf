@@ -5,7 +5,7 @@ from django.contrib.auth.models import (
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, username, email, password=None, is_active=True):
+    def create_user(self, username, email, password=None):
 
         if not username:
             raise ValueError("Users must have a username")
@@ -24,23 +24,9 @@ class UserManager(BaseUserManager):
             email=self.normalize_email(email)
         )
         user_obj.set_password(password)
-        user_obj.active = is_active
-        user_obj.merchant = False
-        user_obj.admin = False
         user_obj.save(using=self._db)
 
         return user_obj
-
-    def create_merchant_user(self, username, email, password):
-        user = self.create_user(
-            username,
-            email,
-            password=password
-        )
-        user.merchant = True
-        user.save(using=self._db)
-
-        return user
 
     def create_superuser(self, username, email, password):
         user = self.create_user(
@@ -48,8 +34,18 @@ class UserManager(BaseUserManager):
             email,
             password=password
         )
-
         user.admin = True
+        user.save(using=self._db)
+
+        return user
+
+    def create_merchant(self, username, email, password):
+        user = self.create_user(
+            username,
+            email,
+            password=password
+        )
+        user.merchant = True
         user.save(using=self._db)
 
         return user
@@ -64,12 +60,12 @@ class User(AbstractBaseUser):
     date_created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    objects = UserManager()
+
     USERNAME_FIELD = 'email'
 
     # USERNAME_FIELD and password are required by default
     REQUIRED_FIELDS = ['username']
-
-    objects = UserManager()
 
     def __str__(self):
         return self.username
