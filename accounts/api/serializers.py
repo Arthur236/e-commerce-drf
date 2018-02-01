@@ -16,6 +16,9 @@ class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(required=True, min_length=8)
 
     class Meta:
+        """
+        Specify meta data
+        """
         model = User
         fields = ('id', 'username', 'email', 'password')
 
@@ -71,6 +74,9 @@ class MerchantSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'password')
 
     def create(self, validated_data):
+        """
+        Create a merchant
+        """
         user = User.objects.create_merchant(
             validated_data['username'],
             validated_data['email'],
