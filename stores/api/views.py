@@ -1,3 +1,6 @@
+"""
+Store api views
+"""
 from django.db.models import Q
 from rest_framework import generics, mixins
 
@@ -15,6 +18,9 @@ class StoreAPIView(mixins.CreateModelMixin, generics.ListAPIView):
     permission_classes = (IsMerchant,)
 
     def get_queryset(self):
+        """
+        Define queryset
+        """
         qs = Store.objects.filter(user=self.request.user)
         query = self.request.GET.get('q')
 
@@ -30,13 +36,22 @@ class StoreAPIView(mixins.CreateModelMixin, generics.ListAPIView):
         serializer.save(user=self.request.user)
 
     def post(self, request, **kwargs):
+        """
+        Define post method operations
+        """
         return self.create(request, **kwargs)
 
 
 class StoreRUDView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Perform read, update and delete operations
+    """
     lookup_field = 'slug'
     serializer_class = StoreSerializer
     permission_classes = (IsOwnerOrReadOnly, IsMerchant,)
 
     def get_queryset(self):
+        """
+        Define queryset
+        """
         return Store.objects.all()

@@ -1,3 +1,6 @@
+"""
+Store api urls
+"""
 from django.conf.urls import url
 from .views import (
     StoreAPIView,

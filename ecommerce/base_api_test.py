@@ -1,3 +1,6 @@
+"""
+Base test file
+"""
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 
@@ -13,8 +16,12 @@ class BaseTest(APITestCase):
     Base test cases
     """
     client = APIClient()
+    token = ''
 
     def setUp(self):
+        """
+        Set up test data
+        """
         self.register_url = reverse('register')
         self.merchant_register_url = reverse('merchant-register')
         self.login_url = reverse('login')
@@ -52,6 +59,9 @@ class BaseTest(APITestCase):
         )
 
     def login_user(self, email, password):
+        """
+        Log in a registered user
+        """
         data = {
             'email': email,
             'password': password

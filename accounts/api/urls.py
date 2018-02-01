@@ -1,11 +1,16 @@
+"""
+Accounts api urls
+"""
 from django.conf.urls import url
+
+from rest_framework_jwt.views import refresh_jwt_token, obtain_jwt_token
+
 from .views import (
     LoginView,
     LogoutView,
     MerchantRegisterAPIView,
     RegisterAPIView,
 )
-from rest_framework_jwt.views import refresh_jwt_token, obtain_jwt_token
 
 urlpatterns = [
     url(r'merchant-register/$', MerchantRegisterAPIView.as_view(), name='merchant-register'),

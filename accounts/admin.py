@@ -1,3 +1,6 @@
+"""
+Define forms for the admin section
+"""
 from django import forms
 from django.contrib import admin
 from django.contrib.auth import get_user_model
@@ -23,7 +26,9 @@ class UserCreationForm(forms.ModelForm):
         fields = ('username', 'email')
 
     def clean_password2(self):
-        # Check that the two password entries match
+        """
+        Check that the two password entries match
+        """
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
@@ -31,7 +36,9 @@ class UserCreationForm(forms.ModelForm):
         return password2
 
     def save(self, commit=True):
-        # Save the provided password in hashed format
+        """
+        Save the provided password in hashed format
+        """
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         if commit:
@@ -53,7 +60,9 @@ class UserChangeForm(forms.ModelForm):
 
 
 class UserAdmin(BaseUserAdmin):
-    # The forms to add and change user instances
+    """
+    The forms to add and change user instances
+    """
     form = UserAdminChangeForm
     add_form = UserAdminCreationForm
 
@@ -71,8 +80,7 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'password1', 'password2')}
-         ),
+            'fields': ('username', 'email', 'password1', 'password2')}),
     )
     search_fields = ('username', 'email',)
     ordering = ('username',)

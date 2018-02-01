@@ -1,3 +1,6 @@
+"""
+E-commerce base urls
+"""
 from django.conf.urls import url, include
 from django.contrib import admin
 

@@ -1,6 +1,9 @@
+"""
+Accounts api views
+"""
 from django.contrib.auth import get_user_model, authenticate, login, logout
 
-from rest_framework import generics, status
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -27,7 +30,10 @@ class RegisterAPIView(APIView):
     """
     Registers a new user
     """
-    def post(self, request, format='json'):
+    def post(self, request):
+        """
+        Define post method logic
+        """
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
@@ -44,7 +50,10 @@ class MerchantRegisterAPIView(APIView):
     """
     Registers a new merchant
     """
-    def post(self, request, format='json'):
+    def post(self, request):
+        """
+        Define post method logic
+        """
         serializer = MerchantSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
@@ -64,15 +73,19 @@ class LoginView(APIView):
     queryset = User.objects.all()
 
     def post(self, request, **kwargs):
+        """
+        Define post method logic
+        """
         email = request.data.get('email', '')
         password = request.data.get('password', '')
         user = authenticate(request, username=email, password=password)
 
         if user is not None:
-            login(request, user)  # saves the user’s ID in the session, using Django’s session framework.
+            # Save the user’s ID in the session, using Django’s session framework.
+            login(request, user)
             serializer = TokenSerializer(
                 data={
-                    # using drf jwt utility functions to generate a token
+                    # Using drf jwt utility functions to generate a token
                     'token': jwt_encode_handler(
                         jwt_payload_handler(user)
                     )})
@@ -91,5 +104,8 @@ class LogoutView(APIView):
     queryset = User.objects.all()
 
     def get(self, request, **kwargs):
+        """
+        Define get method logic
+        """
         logout(request)
         return Response(status=status.HTTP_200_OK)

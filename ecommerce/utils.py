@@ -1,3 +1,6 @@
+"""
+Custom utils
+"""
 import random
 import string
 
@@ -9,6 +12,9 @@ DONT_USE = ['create']
 
 
 def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
+    """
+    Generate a random string
+    """
     return ''.join(random.choice(chars) for _ in range(size))
 
 

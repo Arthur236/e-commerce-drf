@@ -1,3 +1,6 @@
+"""
+Define the forms
+"""
 from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
@@ -17,7 +20,9 @@ class UserAdminCreationForm(forms.ModelForm):
         fields = ('username', 'email',)
 
     def clean_password2(self):
-        # Check that the two password entries match
+        """
+        Check that the two password entries match
+        """
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
@@ -25,7 +30,9 @@ class UserAdminCreationForm(forms.ModelForm):
         return password2
 
     def save(self, commit=True):
-        # Save the provided password in hashed format
+        """
+        Save the provided password in hashed format
+        """
         user = super(UserAdminCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         if commit:
@@ -46,7 +53,9 @@ class UserAdminChangeForm(forms.ModelForm):
         fields = ('username', 'email', 'password', 'active', 'admin')
 
     def clean_password(self):
-        # Regardless of what the user provides, return the initial value.
-        # This is done here, rather than on the field, because the
-        # field does not have access to the initial value
+        """
+        Regardless of what the user provides, return the initial value.
+        This is done here, rather than on the field, because the
+        field does not have access to the initial value
+        """
         return self.initial["password"]

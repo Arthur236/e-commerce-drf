@@ -1,3 +1,6 @@
+"""
+Store api tests
+"""
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from rest_framework import status

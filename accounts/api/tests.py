@@ -1,3 +1,6 @@
+"""
+Accounts api tests
+"""
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -28,7 +31,7 @@ class UserTestCase(BaseTest):
         token = Token.objects.get(user=user)
         self.assertEqual(response.data['token'], token.key)
 
-    def test_create_user_with_short_password(self):
+    def test_create_user_short_password(self):
         """
         Test user is not created for password lengths less than 8.
         """
@@ -41,7 +44,7 @@ class UserTestCase(BaseTest):
         response = self.client.post(self.register_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_user_with_no_password(self):
+    def test_create_user_no_password(self):
         """
         Test user is not created without a password
         """
@@ -54,7 +57,7 @@ class UserTestCase(BaseTest):
         response = self.client.post(self.register_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_user_with_no_username(self):
+    def test_create_user_no_username(self):
         """
         Test user is not created without a username
         """
@@ -66,7 +69,7 @@ class UserTestCase(BaseTest):
         response = self.client.post(self.register_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_user_with_no_email(self):
+    def test_create_user_no_email(self):
         """
         Test whether a user can be registered without an email
         """
@@ -79,7 +82,7 @@ class UserTestCase(BaseTest):
         response = self.client.post(self.register_url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_user_with_preexisting_email(self):
+    def test_create_user_existing_email(self):
         """
         Test whether emails are unique
         """
@@ -108,7 +111,7 @@ class UserTestCase(BaseTest):
         token = Token.objects.get(user=user)
         self.assertEqual(response.data['token'], token.key)
 
-    def test_login_with_valid_credentials(self):
+    def test_login_valid_credentials(self):
         """
         Test a user can log in with valid credentials
         """
@@ -123,7 +126,7 @@ class UserTestCase(BaseTest):
         # Assert status code is 200 OK
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_login_with_invalid_credentials(self):
+    def test_login_invalid_credentials(self):
         """
         Test a user cannot log in with invalid credentials
         """
