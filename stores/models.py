@@ -12,7 +12,7 @@ User = settings.AUTH_USER_MODEL
 
 class Store(models.Model):
     """
-    Define the stor emodel
+    Define the store model
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=120)

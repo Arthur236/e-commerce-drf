@@ -3,7 +3,10 @@ Product api views
 """
 from django.db.models import Q
 from rest_framework import generics, mixins
+from rest_framework.serializers import ValidationError
 
+from ecommerce.permissions import IsMerchant, IsStoreOwner
+from stores.models import Store
 from products.models import Product
 from .serializers import ProductSerializer
 
@@ -14,9 +17,13 @@ class ProductAPIView(mixins.CreateModelMixin, generics.ListAPIView):
     """
     lookup_field = 'slug'
     serializer_class = ProductSerializer
+    permission_classes = (IsMerchant,)
 
     def get_queryset(self):
-        qs = Product.objects.all()
+        store_slug = self.kwargs.get('store_slug')
+        store = Store.objects.get(slug=store_slug)
+
+        qs = Product.objects.filter(store=store.id)
         query = self.request.GET.get('q')
 
         if query is not None:
@@ -24,17 +31,25 @@ class ProductAPIView(mixins.CreateModelMixin, generics.ListAPIView):
                            Q(description__icontains=query)).distinct()
         return qs
 
-    def perform_create(self, serializer):
-        """
-        Add user to the serializer create method
-        """
-        serializer.save(user=self.request.user)
-
     def post(self, request, **kwargs):
         """
         Define post operations
         """
         return self.create(request, **kwargs)
+
+    def perform_create(self, serializer):
+        """
+        Add store
+        """
+        store_slug = self.kwargs.get('store_slug')
+        store = Store.objects.get(slug=store_slug)
+        name = self.request.data['name']
+
+        qs = Product.objects.filter(store=store, name__iexact=name)
+        if qs.exists():
+            raise ValidationError('That product already exists in that store.')
+
+        serializer.save(store=store)
 
 
 class ProductRUDView(generics.RetrieveUpdateDestroyAPIView):
@@ -43,6 +58,7 @@ class ProductRUDView(generics.RetrieveUpdateDestroyAPIView):
     """
     lookup_field = 'slug'
     serializer_class = ProductSerializer
+    permission_classes = (IsMerchant, IsStoreOwner,)
 
     def get_queryset(self):
         """

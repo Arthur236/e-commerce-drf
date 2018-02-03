@@ -8,5 +8,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/auth/', include('accounts.api.urls')),
     url(r'^api/profiles/', include('profiles.api.urls')),
+    url(r'^api/stores/(?P<store_slug>[\w-]+)/products/', include('products.api.urls')),
     url(r'^api/stores/', include('stores.api.urls')),
 ]

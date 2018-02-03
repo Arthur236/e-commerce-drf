@@ -10,6 +10,7 @@ class ProductSerializer(serializers.ModelSerializer):
     """
     Define product serializer
     """
+
     class Meta:
         """
         Specify meta data
@@ -17,4 +18,4 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = '__all__'
 
-        read_only_fields = ['store', 'timestamp']
+        read_only_fields = ['store', 'timestamp', 'updated']

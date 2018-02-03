@@ -8,16 +8,30 @@ from ecommerce.utils import unique_slug_generator
 from stores.models import Store
 
 
+class ProductManager(models.Manager):
+    """
+    Define product manager
+    """
+    def filter_by_instance(self, instance):
+        """
+        Filter products by store
+        """
+        qs = super(ProductManager, self).filter(store=instance)
+        return qs
+
+
 class Product(models.Model):
     """
     Define product model
     """
-    store = models.OneToOneField(Store, on_delete=models.CASCADE)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE)
     name = models.CharField(max_length=120)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     slug = models.SlugField(null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+
+    objects = ProductManager()
 
     class Meta:
         """
@@ -40,4 +54,4 @@ def rl_pre_save_receiver(sender, instance, **kwargs):
         instance.slug = unique_slug_generator(instance)
 
 
-pre_save.connect(rl_pre_save_receiver, sender=Store)
+pre_save.connect(rl_pre_save_receiver, sender=Product)

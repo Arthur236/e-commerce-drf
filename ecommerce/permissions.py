@@ -34,3 +34,17 @@ class IsMerchant(permissions.BasePermission):
             return True
 
         return False
+
+
+class IsStoreOwner(permissions.BasePermission):
+    """
+    Check whether a user is the owner of store
+    """
+    def has_object_permission(self, request, view, obj):
+        """
+        Read permissions are allowed to any request
+        """
+        if request.user.merchant and obj.store.user == request.user:
+            return True
+
+        return False
