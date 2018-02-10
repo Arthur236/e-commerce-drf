@@ -16,7 +16,6 @@ from rest_framework_jwt.settings import api_settings
 
 from .serializers import (
     MerchantSerializer,
-    TokenSerializer,
     UserSerializer
 )
 
@@ -72,8 +71,10 @@ class LoginView(APIView):
     """
     queryset = User.objects.all()
 
-    # Function to resolve email to username
     def get_user(self, email):
+        """
+        Function to resolve email to username
+        """
         try:
             return User.objects.get(email=email.lower())
         except User.DoesNotExist:
@@ -91,14 +92,18 @@ class LoginView(APIView):
         if user is not None:
             # Save the user’s ID in the session, using Django’s session framework.
             login(request, user)
-            serializer = TokenSerializer(
-                data={
-                    # Using drf jwt utility functions to generate a token
-                    'token': jwt_encode_handler(
-                        jwt_payload_handler(user)
-                    )})
-            serializer.is_valid()
-            return Response(serializer.data)
+            response = {
+                # Using drf jwt utility functions to generate a token
+                'token': jwt_encode_handler(jwt_payload_handler(user)),
+                'user': {
+                    "id": user.id,
+                    "username": user.username,
+                    "email": user.email,
+                    "admin": user.admin,
+                    "merchant": user.merchant
+                }
+            }
+            return Response(response, status=status.HTTP_200_OK)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 

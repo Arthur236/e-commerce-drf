@@ -108,23 +108,3 @@ class MerchantSerializer(serializers.ModelSerializer):
         if qs.exists():
             raise serializers.ValidationError("That email is already taken.")
         return value
-
-
-class TokenSerializer(serializers.Serializer):
-    """
-    Serializes the token data
-    """
-
-    def update(self, instance, validated_data):
-        """
-        Update method
-        """
-        pass
-
-    def create(self, validated_data):
-        """
-        Create method
-        """
-        pass
-
-    token = serializers.CharField(max_length=255)
