@@ -79,10 +79,10 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'username'
 
     # USERNAME_FIELD and password are required by default
-    REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = ['email']
 
     def __str__(self):
         """

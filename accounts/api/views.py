@@ -72,13 +72,21 @@ class LoginView(APIView):
     """
     queryset = User.objects.all()
 
+    # Function to resolve email to username
+    def get_user(self, email):
+        try:
+            return User.objects.get(email=email.lower())
+        except User.DoesNotExist:
+            return None
+
     def post(self, request, **kwargs):
         """
         Define post method logic
         """
         email = request.data.get('email', '')
         password = request.data.get('password', '')
-        user = authenticate(request, username=email, password=password)
+        username = self.get_user(email)
+        user = authenticate(request, username=username, password=password)
 
         if user is not None:
             # Save the user’s ID in the session, using Django’s session framework.
