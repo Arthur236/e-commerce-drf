@@ -33,8 +33,10 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
             'last_login',
             'first_name',
             'last_name',
+            'merchant',
+            'admin',
             'date_created',
             'updated'
         )
 
-        read_only_fields = ['last_login', 'date_created']
+        read_only_fields = ['merchant', 'admin', 'last_login', 'date_created']
