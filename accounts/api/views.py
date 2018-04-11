@@ -89,6 +89,10 @@ class LoginView(APIView):
         username = self.get_user(email)
         user = authenticate(request, username=username, password=password)
 
+        if username.password != password:
+            response = 'The password provided is incorrect.'
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
         if user is not None:
             # Save the user’s ID in the session, using Django’s session framework.
             login(request, user)
@@ -104,7 +108,9 @@ class LoginView(APIView):
                 }
             }
             return Response(response, status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        response = 'That user does not exist.'
+        return Response(response, status=status.HTTP_404_NOT_FOUND)
 
 
 class LogoutView(APIView):
