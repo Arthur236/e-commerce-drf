@@ -2,6 +2,7 @@
 Accounts api views
 """
 from django.contrib.auth import get_user_model, authenticate, login, logout
+from django.contrib.auth.hashers import check_password
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -89,7 +90,9 @@ class LoginView(APIView):
         username = self.get_user(email)
         user = authenticate(request, username=username, password=password)
 
-        if username.password != password:
+        print(username.password, password)
+
+        if not check_password(password, username.password):
             response = {
                 'password': ['The password provided is incorrect.']
             }
