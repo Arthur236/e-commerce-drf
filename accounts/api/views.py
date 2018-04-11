@@ -90,7 +90,10 @@ class LoginView(APIView):
         user = authenticate(request, username=username, password=password)
 
         if username.password != password:
-            response = 'The password provided is incorrect.'
+            response = {
+                'password': ['The password provided is incorrect.']
+            }
+
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
         if user is not None:
@@ -109,7 +112,9 @@ class LoginView(APIView):
             }
             return Response(response, status=status.HTTP_200_OK)
 
-        response = 'That user does not exist.'
+        response = {
+            'email': ['That user does not exist.']
+        }
         return Response(response, status=status.HTTP_404_NOT_FOUND)
 
 
