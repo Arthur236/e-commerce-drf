@@ -10,7 +10,7 @@ Django==1.11.9
 django-coverage-plugin==1.5.0
 django-debug-toolbar==1.9.1
 django-toolbelt==0.0.1
-djangorestframework==3.7.7
+djangorestframework==3.11.2
 djangorestframework-jwt==1.11.0
 gunicorn==19.7.1
 idna==2.6
